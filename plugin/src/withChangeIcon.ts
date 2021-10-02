@@ -1,3 +1,5 @@
+// referenced from https://github.com/expo/config-plugins/tree/master/packages/react-native-dynamic-app-icon
+
 import {
   ConfigPlugin,
   IOSConfig,
@@ -17,10 +19,10 @@ const folderName = 'AppIcons';
 const size = 60; // base icon size
 const scales = [2, 3];
 
-type IconSet = Record<string, { image: string; prerendered?: boolean }>;
+type IconSet = Record<string, { image: string }>;
 
 type Props = {
-  icons: Record<string, { image: string; prerendered?: boolean }>;
+  icons: Record<string, { image: string }>;
 };
 
 /**
@@ -35,7 +37,7 @@ async function iterateIconsAsync(
   { icons }: Props,
   callback: (
     key: string,
-    icon: { image: string; prerendered?: boolean },
+    icon: { image: string },
     index: number
   ) => Promise<void>
 ) {
@@ -131,7 +133,7 @@ const withIconInfoPlist: ConfigPlugin<Props> = (config, { icons }) => {
           // i.e. `BlueIcon` when the image is `ios/AppName/AppIcons/BlueIcon@2x.png`
           getIconName(key),
         ],
-        UIPrerenderedIcon: !!icon.prerendered,
+        UIPrerenderedIcon: false,
       };
     });
 
@@ -147,11 +149,9 @@ const withIconInfoPlist: ConfigPlugin<Props> = (config, { icons }) => {
         config.modResults[key] = {};
       }
 
-      // handle CFBundleAlternateIcons
       // @ts-expect-error
       config.modResults[key].CFBundleAlternateIcons = altIcons;
 
-      // handle CFBundlePrimaryIcon
       // @ts-expect-error
       config.modResults[key].CFBundlePrimaryIcon = altIcons.default;
     }
@@ -230,7 +230,6 @@ const withChangeIcon: ConfigPlugin<IconSet | void> = (config, props = {}) => {
   // add `default` icon
   icons.default = {
     image: './assets/icon.png',
-    prerendered: false,
   };
 
   config = withIconXcodeProject(config, { icons });
