@@ -19,10 +19,10 @@ const folderName = 'AppIcons';
 const size = 60; // base icon size
 const scales = [2, 3];
 
-type IconSet = Record<string, { image: string }>;
+type IconSet = Record<string, string>;
 
 type Props = {
-  icons: Record<string, { image: string }>;
+  icons: Record<string, string>;
 };
 
 /**
@@ -35,11 +35,7 @@ function getIconName(name: string, scale?: number) {
 
 async function iterateIconsAsync(
   { icons }: Props,
-  callback: (
-    key: string,
-    icon: { image: string },
-    index: number
-  ) => Promise<void>
+  callback: (key: string, iconImage: string, index: number) => Promise<void>
 ) {
   const entries = Object.entries(icons);
   for (let i = 0; i < entries.length; i++) {
@@ -126,7 +122,7 @@ const withIconInfoPlist: ConfigPlugin<Props> = (config, { icons }) => {
       { CFBundleIconFiles: string[]; UIPrerenderedIcon: boolean }
     > = {};
 
-    await iterateIconsAsync({ icons }, async (key, icon) => {
+    await iterateIconsAsync({ icons }, async (key) => {
       altIcons[key] = {
         CFBundleIconFiles: [
           // Must be a file path relative to the source root (not a icon set it seems).
@@ -153,7 +149,7 @@ const withIconInfoPlist: ConfigPlugin<Props> = (config, { icons }) => {
       config.modResults[key].CFBundleAlternateIcons = altIcons;
 
       // @ts-expect-error
-      config.modResults[key].CFBundlePrimaryIcon = altIcons.default;
+      config.modResults[key].CFBundlePrimaryIcon = altIcons.primary;
     }
 
     // Apply for both tablet and phone support
@@ -186,7 +182,7 @@ async function createIconsAsync(
   await fs.promises.mkdir(iconsFolder, { recursive: true });
 
   // Generate new assets
-  await iterateIconsAsync({ icons }, async (key, icon) => {
+  await iterateIconsAsync({ icons }, async (key, iconImage) => {
     for (const scale of scales) {
       const iconFileName = getIconName(key, scale);
       const fileName = path.join(folderName, iconFileName);
@@ -200,7 +196,7 @@ async function createIconsAsync(
         },
         {
           name: iconFileName,
-          src: icon.image,
+          src: iconImage,
           removeTransparency: true,
           backgroundColor: '#ffffff',
           resizeMode: 'cover',
@@ -225,12 +221,13 @@ const withIconImages: ConfigPlugin<Props> = (config, props) => {
 };
 
 const withChangeIcon: ConfigPlugin<IconSet | void> = (config, props = {}) => {
-  let icons: Props['icons'] = props || {};
+  const icons: Props['icons'] = props || {};
 
-  // add `default` icon
-  icons.default = {
-    image: './assets/icon.png',
-  };
+  // ensure there is a `primary` icon, default to the standard Expo app
+  // icon location
+  if (!icons.primary) {
+    icons.primary = './assets/icon.png';
+  }
 
   config = withIconXcodeProject(config, { icons });
   config = withIconInfoPlist(config, { icons });
