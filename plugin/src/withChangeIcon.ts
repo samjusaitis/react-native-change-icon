@@ -79,7 +79,7 @@ const withIconXcodeProject: ConfigPlugin<Props> = (config, { icons }) => {
       project.removeFromPbxFileReferenceSection(file); // PBXFileReference
       if (group) {
         if (groupId) {
-          project.removeFromPbxGroup(file, groupId); //Group other than Resources (i.e. 'splash')
+          project.removeFromPbxGroup(file, groupId); // Group other than Resources (i.e. 'splash')
         } else if (variantGroupId) {
           project.removeFromPbxVariantGroup(file, variantGroupId); // PBXVariantGroup
         }
@@ -175,7 +175,7 @@ async function createIconsAsync(
   try {
     await fs.promises.rm(iconsFolder, { recursive: true });
   } catch {
-    // will error if the folder doesn't exist (don't need to do anything)
+    // errors if the folder doesn't exist (don't need to do anything)
   }
 
   // Ensure directory exists
@@ -192,7 +192,7 @@ async function createIconsAsync(
       const { source } = await generateImageAsync(
         {
           projectRoot: config.modRequest.projectRoot,
-          cacheType: 'react-native-dynamic-app-icon',
+          cacheType: 'react-native-change-icon',
         },
         {
           name: iconFileName,
