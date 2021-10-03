@@ -23,8 +23,8 @@ plugin](https://docs.expo.io/guides/config-plugins/) details to the
 array of your `app.json` or `app.config.js`:
 
 Include an object with your alternate icons. Use the icon name and the
-location of a source image to output into @2x and @3x variants.
-Ensure there is a `primary` entry to set as your primary icon.
+location of a source image (at least 180 x 180px) to output into @2x and @3x variants.
+The first icon in the list will be set as your primary icon.
 
 ```json
 {
@@ -34,9 +34,9 @@ Ensure there is a `primary` entry to set as your primary icon.
         "react-native-change-icon",
         {
           "primary": "./assets/icon.png",
-          "white": "./assets/appIcons/white.png",
-          "gold": "./assets/appIcons/gold.png",
-          "red": "./assets/appIcons/red.png"
+          "white": "./assets/altIcons/white.png",
+          "gold": "./assets/altIcons/gold.png",
+          "red": "./assets/altIcons/red.png"
         }
       ]
     ]

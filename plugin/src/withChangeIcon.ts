@@ -148,8 +148,9 @@ const withIconInfoPlist: ConfigPlugin<Props> = (config, { icons }) => {
       // @ts-expect-error
       config.modResults[key].CFBundleAlternateIcons = altIcons;
 
+      // Use the first icon specified as the CFBundlePrimaryIcon
       // @ts-expect-error
-      config.modResults[key].CFBundlePrimaryIcon = altIcons.primary;
+      config.modResults[key].CFBundlePrimaryIcon = Object.values(altIcons)[0];
     }
 
     applyToPlist('CFBundleIcons');
@@ -220,12 +221,6 @@ const withIconImages: ConfigPlugin<Props> = (config, props) => {
 
 const withChangeIcon: ConfigPlugin<IconSet | void> = (config, props = {}) => {
   const icons: Props['icons'] = props || {};
-
-  // ensure there is a `primary` icon, and if not default to the
-  // standard Expo app icon location
-  if (typeof icons.primary !== 'string') {
-    icons.primary = './assets/icon.png';
-  }
 
   config = withIconXcodeProject(config, { icons });
   config = withIconInfoPlist(config, { icons });
