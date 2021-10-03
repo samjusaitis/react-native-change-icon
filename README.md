@@ -1,25 +1,26 @@
-
 # React Native Change Icon
 
 [![npm version](https://badge.fury.io/js/react-native-change-icon.svg)](https://badge.fury.io/js/react-native-change-icon)
 
-Change Application Icon Programmatically.
+Change application icon programmatically.
+
 - [x] iOS
 - [x] Android
 
 ## Getting started
 
-`$ yarn add react-native-change-icon`
+### Install package
 
-### Automatic installation
+```bash
+yarn add react-native-change-icon
 
-`$ react-native link react-native-change-icon`
+# Automatic installation
+react-native link react-native-change-icon
+```
 
-## Usage
+## Setup: iOS
 
-#### iOS
-
-1. Open your project in Xcode and create an **App Icons** group inside you app's group.
+1. Open your project in Xcode and create an **App Icons** group inside your app's group.
 2. Add all the app icons you need inside this group with names like *icon@2x.png*, *icon@3x.png*.
 3. Your directory structure in Xcode would look like:
 
@@ -36,13 +37,14 @@ Change Application Icon Programmatically.
 
 ![Info.plist](images/Info.plist.png)
 
-#### Android
+## Setup: Android
 
 1. Add all the icons you need inside your project's `android/app/src/main/res/mipmap-*` directories:
 
 ![Android Directory](images/Android_Icons.png)
 
 2. Modify your `AndroidManifest.xml` file's `<application>` tag as following:
+
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example">
@@ -86,13 +88,15 @@ Change Application Icon Programmatically.
 
 </manifest>
 ```
+
 You can create more `<activity-alias>` tags to make more alternate icons.
-*Note that the name in <activity-alias> should be "com.{package_name}.MainActivity%", where `%` is the icon name.*
+_Note that the name in <activity-alias> should be "com.{package_name}.MainActivity%", where `%` is the icon name._
 
 **NOTE: Steps 3 & 4 only required for React-Native Version < 60**
 
 3. Open the `MainApplication.java` file.
 4. Pass `BuildConfig.APPLICATION_ID` to `new ChangeIconPackage()` inside the `getPackages()` function.
+
 ```java
 @Override
 protected List<ReactPackage> getPackages() {
@@ -103,9 +107,70 @@ protected List<ReactPackage> getPackages() {
 }
 ```
 
-**Note that all the icon names must be in lowercase and only limited to alphabets `a-z`**
+> **NOTE: all the icon names must be in lowercase and only limited to
+> alphabets `a-z`**
 
-Now you can use the following code to change application icon:
+## Setup: Expo
+
+> 🚨 Currently this config plugin has only been
+> implemented for iOS. A pull request adding the necessary Android setup
+> steps would be welcome!
+
+This package cannot be used in the "Expo Go" app because [it requires
+custom native code](https://docs.expo.io/workflow/customizing/).
+However, it can be used with
+[`expo-dev-client`](https://docs.expo.dev/clients/getting-started/) as
+outlined below.
+
+### Install the package
+
+```sh
+yarn add react-native-change-icon
+```
+
+### Add the config plugin
+
+Add the [config
+plugin](https://docs.expo.io/guides/config-plugins/) details to the
+[`plugins`](https://docs.expo.io/versions/latest/config/app/#plugins)
+array of your `app.json` or `app.config.js`:
+
+Include an object with your icon names and the location of a source image (at least 180 x 180px) which the config
+plugin will output into @2x and @3x variants.
+
+_The first icon in the list will be set as your primary icon._
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "react-native-change-icon",
+        {
+          "primary": "./assets/icon.png",
+          "white": "./assets/altIcons/white.png",
+          "gold": "./assets/altIcons/gold.png",
+          "red": "./assets/altIcons/red.png"
+        }
+      ]
+    ]
+  }
+}
+```
+
+### Rebuild your app
+
+Finally rebuild your app (this is further described in Expo's ["Adding custom native code"](https://docs.expo.io/workflow/customizing/) guide):
+
+```
+expo prebuild
+
+expo run:ios
+```
+
+## Usage
+
+Now you can use the following code to change the application icon:
 
 ```javascript
 import { changeIcon } from 'react-native-change-icon';
