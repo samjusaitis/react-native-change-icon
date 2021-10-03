@@ -152,9 +152,7 @@ const withIconInfoPlist: ConfigPlugin<Props> = (config, { icons }) => {
       config.modResults[key].CFBundlePrimaryIcon = altIcons.primary;
     }
 
-    // Apply for both tablet and phone support
     applyToPlist('CFBundleIcons');
-    applyToPlist('CFBundleIcons~ipad');
 
     return config;
   });
@@ -223,9 +221,9 @@ const withIconImages: ConfigPlugin<Props> = (config, props) => {
 const withChangeIcon: ConfigPlugin<IconSet | void> = (config, props = {}) => {
   const icons: Props['icons'] = props || {};
 
-  // ensure there is a `primary` icon, default to the standard Expo app
-  // icon location
-  if (!icons.primary) {
+  // ensure there is a `primary` icon, and if not default to the
+  // standard Expo app icon location
+  if (typeof icons.primary !== 'string') {
     icons.primary = './assets/icon.png';
   }
 
