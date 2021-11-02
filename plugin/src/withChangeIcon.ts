@@ -62,12 +62,13 @@ const withIconXcodeProject: ConfigPlugin<Props> = (config, { icons }) => {
         return _group.name === group.name;
       }
     );
-    const variantGroupId = Object.keys(
-      project.hash.project.objects.PBXVariantGroup
-    ).find((id) => {
-      const _group = project.hash.project.objects.PBXVariantGroup[id];
-      return _group.name === group.name;
-    });
+
+    const variantGroupId = project.hash.project.objects?.PBXVariantGroup
+      ? Object.keys(project.hash.project.objects.PBXVariantGroup).find((id) => {
+          const _group = project.hash.project.objects.PBXVariantGroup[id];
+          return _group.name === group.name;
+        })
+      : undefined;
 
     const children = [...(group.children || [])];
 
