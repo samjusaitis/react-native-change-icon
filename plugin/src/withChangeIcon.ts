@@ -172,11 +172,8 @@ async function createIconsAsync(
   const iconsFolder = path.join(iosRoot, folderName);
 
   // Delete all existing assets
-  try {
-    await fs.promises.rm(iconsFolder, { recursive: true });
-  } catch {
-    // errors if the folder doesn't exist (don't need to do anything)
-  }
+  // (errors if the folder doesn't exist: don't need to do anything)
+  await fs.promises.rmdir(iconsFolder, { recursive: true }).catch(() => null);
 
   // Ensure directory exists
   await fs.promises.mkdir(iconsFolder, { recursive: true });
